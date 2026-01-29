@@ -10,16 +10,17 @@
   "orientation": "portrait",
   "icons": [
     {
-      "src": "20250517_001646.png",
+      "src": "20260129_220437.jpg",
       "sizes": "192x192",
       "type": "image/png",
       "purpose": "any maskable"
     },
     {
-      "src": "20250517_001723.png",
+      "src": "20260129_220437.jpg",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any maskable"
     }
   ]
 } 
+
