@@ -1,0 +1,900 @@
+/* --- CSS Styles --- */
+/* Basic Reset */
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+html, body {
+  width: 100%;
+  height: 100%;
+  overflow: hidden; /* Prevent scrolling inside PWA */
+}
+
+body {
+  font-family: 'Press Start 2P', cursive;
+  background: #050505 url('https://www.transparenttextures.com/patterns/stardust.png'); /* Darker background */
+  color: #e0e0e0; /* Slightly off-white text */
+  margin-bottom: 50px; /* Space for banner */
+  position: fixed; /* Fix body for PWA */
+}
+canvas { display: block; background-color: #60a5fa; /* Brighter sky blue */ }
+.text-glow { text-shadow: 0 0 4px #fff, 0 0 8px #fff, 0 0 12px #ff38a1, 0 0 16px #ff38a1; } /* Enhanced Pink Glow */
+.box-glow { box-shadow: 0 0 6px rgba(255, 255, 255, 0.7), 0 0 12px rgba(255, 56, 161, 0.6); } /* Enhanced Pink Glow */
+
+/* --- NEW: Loading Screen Styles --- */
+#loadingScreen {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background: #050505 url('https://i.imgur.com/KFWJlte.png'); /* Use main menu background */
+    background-size: cover; background-position: center;
+    z-index: 9999; display: flex; flex-direction: column;
+    justify-content: center; align-items: center; color: #fff;
+    font-family: 'Press Start 2P', cursive;
+}
+#loadingText { 
+    font-size: 1.5em; 
+    margin-bottom: 25px; 
+    text-shadow: 3px 3px 5px #000;
+    /* Replaces the old 'Loading Game...' box */
+}
+.progress-bar-container { 
+    width: 80%; max-width: 400px; height: 20px; 
+    background: rgba(0,0,0,0.5); 
+    border: 2px solid #fff; 
+    border-radius: 10px; 
+    overflow: hidden; 
+    box-shadow: 0 0 10px rgba(255,255,255,0.5);
+}
+#progressBar { 
+    width: 0%; height: 100%; 
+    background: linear-gradient(90deg, #ff38a1, #2196f3); 
+    transition: width 0.3s ease-in-out; 
+}
+#loadingPercentage { 
+    margin-top: 15px; 
+    font-size: 1.2em; 
+    text-shadow: 2px 2px 4px #000; 
+}
+
+
+/* --- Enhanced General Button Styles --- */
+.game-btn {
+  padding: 15px 30px; /* More padding */
+  margin: 10px;
+  font-size: 15px; /* Slightly larger font */
+  border: none;
+  border-radius: 12px; /* Smoother radius */
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94); /* Smoother transition */
+  background: linear-gradient(145deg, #ff6b6b, #ee5253); /* New Red Gradient */
+  color: #ffffff; /* Pure white text */
+  font-family: 'Press Start 2P', cursive;
+  text-transform: uppercase;
+  text-shadow: 2px 2px 4px rgba(0,0,0,0.7); /* Deeper text shadow */
+  border-bottom: 6px solid #c0392b; /* Darker, thicker bottom border */
+  box-shadow: 0 6px 10px rgba(0, 0, 0, 0.35), inset 0 -2px 5px rgba(0,0,0,0.2); /* Enhanced shadow */
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1.4;
+  text-decoration: none;
+}
+.game-btn:hover:not(:disabled) {
+  transform: translateY(-4px) scale(1.05); /* More pronounced hover effect */
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.4), 0 0 20px rgba(255, 107, 107, 0.7); /* Enhanced shadow + red glow */
+  background: linear-gradient(145deg, #ff7979, #ff6b6b); /* Slightly brighter hover gradient */
+}
+.game-btn:active:not(:disabled) {
+     transform: translateY(0px) scale(1); /* Reset transform on press */
+     border-bottom-width: 3px; /* Reduce border on press */
+     box-shadow: 0 3px 6px rgba(0, 0, 0, 0.3), inset 0 2px 4px rgba(0,0,0,0.3); /* Reduced shadow on press */
+}
+.game-btn:disabled {
+    background: linear-gradient(145deg, #666, #444); /* Dark grey gradient */
+    cursor: not-allowed;
+    border-bottom-color: #222; /* Very dark border */
+    box-shadow: none; transform: none; opacity: 0.6; /* More faded */
+    color: #aaa; /* Grey text */
+    text-shadow: none;
+}
+
+/* --- Google Sign-in Panel Styles --- */
+#googleSignInPanel {
+    position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+    background-image: var(--bg-login-panel);
+    background-repeat: no-repeat;
+    background-position: center center;
+    background-size: cover; background-color: rgba(0, 0, 0, 0.75); /* Slightly darker overlay */
+    background-blend-mode: darken; z-index: 100; /* display handled by JS */
+    flex-direction: column; justify-content: center; align-items: center;
+    color: #fff; padding: 20px; text-align: center;
+}
+ #googleSignInPanel h2 {
+    font-size: 2.8em; /* Slightly larger */
+    color: #ff38a1; /* Consistent pink */
+    margin-bottom: 35px;
+    text-shadow: 4px 4px 0px #000, 0 0 18px #ff38a1, 0 0 25px #ff38a1; /* Enhanced text shadow */
+}
+#googleSignInBtn {
+    background: linear-gradient(145deg, #4f8ef7, #3678e6); /* Brighter Google blue */
+    border-bottom-color: #1a5ac4;
+    color: white; width: 300px; /* Slightly wider */
+    padding: 16px 28px; /* More padding */
+    font-size: 16px;
+    display: inline-flex; align-items: center; justify-content: center;
+}
+#googleSignInBtn img { width: 26px; height: 26px; margin-right: 18px; background-color: white; padding: 3px; border-radius: 3px; }
+#googleSignInBtn:hover:not(:disabled) {
+    background-image: linear-gradient(145deg, #5a95f8, #4185f4);
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.4), 0 0 20px rgba(66, 133, 244, 0.7); /* Blue glow on hover */
+}
+ #guestButtonAlt {
+    background: linear-gradient(145deg, #95a5a6, #7f8c8d); /* Muted grey/blue */
+    border-bottom-color: #525e5f;
+    width: 300px; margin-top: 15px;
+ }
+ #guestButtonAlt:hover:not(:disabled) {
+     background-image: linear-gradient(145deg, #aab5b6, #95a5a6);
+     box-shadow: 0 8px 15px rgba(0, 0, 0, 0.4), 0 0 15px rgba(149, 165, 166, 0.6); /* Grey glow */
+ }
+
+/* --- Main Menu --- */
+#mainMenu {
+  position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+  background-image: var(--bg-main-menu);
+  background-repeat: no-repeat;
+  background-position: center center;
+  background-size: cover;
+  background-color: rgba(10, 10, 10, 0.6); background-blend-mode: darken; /* Add subtle overlay */
+  z-index: 30; display: none; flex-direction: column; justify-content: center; align-items: center;
+  color: #fff; padding: 20px; text-align: center; padding-top: 90px; /* Adjusted padding */
+}
+
+/* --- RE-STYLED Top Status Bar --- */
+#topRightStatusContainer {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  z-index: 35;
+  display: none; /* Controlled by JS */
+  background: rgba(0,0,0,0.8);
+  padding: 5px 12px;
+  border-radius: 20px; /* Pill shape */
+  border: 1px solid #555;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.5), inset 0 0 4px rgba(0,0,0,0.3);
+  flex-direction: row;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+#topRightStatusContainer:hover {
+    transform: scale(1.05);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.6), 0 0 10px rgba(255, 215, 0, 0.5);
+}
+#topRightStatusContainer img {
+  width: 18px;
+  height: 18px;
+}
+#topRightStatusContainer span {
+  font-size: 13px;
+  font-weight: bold;
+}
+.status-divider {
+    width: 1px;
+    height: 16px;
+    background-color: #666;
+    margin: 0 4px;
+}
+.coin-value { color: #FFD700; }
+.pkr-value { color: #2ecc71; }
+#topRightStatusContainer .pkr-label { color: #2ecc71; margin-right: -4px; }
+/* --- End Re-Styled Bar --- */
+
+
+#settingsBtn {
+  position: absolute; top: 15px; left: 15px; background: rgba(30,30,30,0.85); /* Slightly less dark */
+  border: 2px solid #bbb;
+  border-radius: 50%; cursor: pointer; z-index: 35; width: 50px; height: 50px; /* Slightly larger */
+  display: none;
+  justify-content: center; align-items: center; transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.5);
+}
+#settingsBtn svg { width: 26px; height: 26px; fill: #ddd; }
+#settingsBtn:hover {
+    transform: rotate(60deg) scale(1.12); /* Faster rotation, larger scale */
+    box-shadow: 0 0 18px rgba(255,255,255,0.8); /* Brighter glow */
+    border-color: #fff;
+}
+#mainMenu .menu-btn { width: 280px; margin-bottom: 20px; } /* Wider buttons, more spacing */
+
+/* Specific Main Menu Button Colors */
+#mainMenu #startBtn { background: linear-gradient(145deg, #ff6b6b, #ee5253); border-bottom-color: #c0392b; }
+#mainMenu #startBtn:hover:not(:disabled) { background: linear-gradient(145deg, #ff7979, #ff6b6b); box-shadow: 0 10px 20px rgba(0, 0, 0, 0.4), 0 0 20px rgba(255, 107, 107, 0.7); }
+
+#mainMenu #withdrawBtn { background: linear-gradient(145deg, #2ecc71, #27ae60); border-bottom-color: #16a085; display: none; } /* Positive Green */
+#mainMenu #withdrawBtn:hover:not(:disabled) { background-image: linear-gradient(145deg, #58d68d, #2ecc71); box-shadow: 0 8px 15px rgba(0, 0, 0, 0.4), 0 0 20px rgba(46, 204, 113, 0.7); }
+
+#mainMenu #inviteFriend { background: linear-gradient(145deg, #3498db, #2980b9); border-bottom-color: #1f618d; display: none; } /* Action Blue */
+#mainMenu #inviteFriend:hover:not(:disabled) { background-image: linear-gradient(145deg, #5dade2, #3498db); box-shadow: 0 8px 15px rgba(0, 0, 0, 0.4), 0 0 20px rgba(52, 152, 219, 0.7); }
+
+#mainMenu #infoBtn { background: linear-gradient(145deg, #f1c40f, #f39c12); border-bottom-color: #d35400; } /* Info Yellow/Amber */
+#mainMenu #infoBtn:hover:not(:disabled) { background-image: linear-gradient(145deg, #f4d03f, #f1c40f); box-shadow: 0 8px 15px rgba(0, 0, 0, 0.4), 0 0 20px rgba(241, 196, 15, 0.7); }
+
+/* NEW: PWA Install Button - Enhanced Style */
+#mainMenu #installPwaBtn {
+    background: linear-gradient(145deg, #9b59b6, #8e44ad); /* Purple */
+    border-bottom-color: #6c3483;
+    display: none; /* Initially hidden, shown by JS */
+    animation: pulse 2s infinite; /* Add a subtle pulse animation */
+}
+@keyframes pulse {
+  0% { transform: scale(1); box-shadow: 0 8px 15px rgba(0, 0, 0, 0.4), 0 0 20px rgba(155, 89, 182, 0.4); }
+  50% { transform: scale(1.03); box-shadow: 0 12px 25px rgba(0, 0, 0, 0.5), 0 0 30px rgba(155, 89, 182, 0.8); }
+  100% { transform: scale(1); box-shadow: 0 8px 15px rgba(0, 0, 0, 0.4), 0 0 20px rgba(155, 89, 182, 0.4); }
+}
+#mainMenu #installPwaBtn:hover:not(:disabled) {
+    background-image: linear-gradient(145deg, #af7ac5, #9b59b6);
+    animation-play-state: paused; /* Pause animation on hover */
+}
+
+#mainMenu #logoutBtn { background: linear-gradient(145deg, #95a5a6, #7f8c8d); border-bottom-color: #566573; display: none; } /* Neutral Grey */
+#mainMenu #logoutBtn:hover:not(:disabled) { background-image: linear-gradient(145deg, #aab7b8, #95a5a6); box-shadow: 0 8px 15px rgba(0, 0, 0, 0.4), 0 0 15px rgba(149, 165, 166, 0.6); }
+
+
+/* --- WhatsApp Button Styles --- */
+.whatsapp-btn {
+   position: fixed;
+   bottom: 65px; /* Adjust based on banner height + padding */
+   right: 20px;
+   z-index: 900; /* High z-index */
+   width: 60px; /* Slightly larger */
+   height: 60px;
+   background-color: #25D366; /* WhatsApp Green */
+   border-radius: 50%; /* Circular shape */
+   display: none; /* Handled by JS */
+   justify-content: center;
+   align-items: center;
+   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4), 0 0 15px rgba(37, 211, 102, 0.6); /* Shadow and green glow */
+   cursor: pointer;
+   transition: transform 0.2s ease, box-shadow 0.2s ease;
+   text-decoration: none; /* Remove underline */
+   border: 3px solid #128C7E; /* Darker green border */
+   padding: 5px; /* Padding inside for the image */
+}
+.whatsapp-btn img {
+    width: 100%; /* Make image fill the button */
+    height: 100%;
+    object-fit: contain; /* Ensure image is scaled correctly */
+     border-radius: 50%; /* Make image circular */
+}
+.whatsapp-btn:hover {
+   transform: scale(1.15); /* Grow slightly on hover */
+   box-shadow: 0 6px 12px rgba(0, 0, 0, 0.5), 0 0 20px rgba(37, 211, 102, 0.8); /* More pronounced shadow/glow */
+}
+ .whatsapp-btn:active {
+     transform: scale(1.05); /* Shrink slightly on click */
+     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+ }
+
+
+ /* --- Spin Button Styles (Tailwind takes over most) --- */
+#spinBtn {
+   position: fixed;
+   bottom: 65px; /* Align with WhatsApp */
+   right: 90px; /* Position next to WhatsApp */
+   z-index: 900; /* High z-index */
+   width: 60px;
+   height: 60px;
+   border-radius: 50%; /* Circular */
+   display: none; /* Handled by JS */
+   justify-content: center;
+   align-items: center;
+   cursor: pointer;
+   transition: transform 0.2s ease, box-shadow 0.2s ease;
+   text-decoration: none;
+   border: 3px solid rgba(255,255,255,0.5); /* Subtle border */
+   padding: 5px;
+   /* Tailwind classes will handle background, shadow, hover */
+}
+#spinBtn img {
+    width: 100%; height: 100%; object-fit: contain; border-radius: 50%;
+}
+ #spinBtn:hover {
+   transform: scale(1.15);
+ }
+  #spinBtn:active {
+     transform: scale(1.05);
+ }
+
+
+/* --- Game Over Menu --- */
+#gameOverMenu {
+  position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.88); /* Darker overlay */
+  z-index: 40; display: none; flex-direction: column; justify-content: center; align-items: center;
+  color: #f44336; /* Consistent Error Red */
+  padding: 20px; text-align: center;
+}
+#gameOverMenu h2 {
+    font-size: 2.25em; /* UPDATED: 50% smaller (was 4.5em) */
+    text-shadow: 2px 2px 0px #000, 0 0 12px #ff0000, 0 0 18px #ff0000; /* UPDATED: Roughly 50% smaller shadow/glow */
+    margin-bottom: 12px; /* UPDATED: 50% smaller (was 25px) */
+}
+#gameOverMenu p {
+    font-size: 0.9em; /* UPDATED: 50% smaller (was 1.8em) */
+    color: #fff;
+    margin-bottom: 8px; /* UPDATED: Roughly 50% smaller (was 15px) */
+    text-shadow: 1px 1px 2px #000; /* UPDATED: 50% smaller shadow */
+}
+#gameOverMenu .menu-btn { width: 220px; } /* Standard button size */
+#gameOverMenu #restartBtn {
+    background: linear-gradient(145deg, #4caf50, #388e3c); /* Positive Green */
+    border-bottom-color: #1b5e20;
+}
+#gameOverMenu #restartBtn:hover:not(:disabled) {
+    background-image: linear-gradient(145deg, #66bb6a, #43a047);
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.4), 0 0 20px rgba(76, 175, 80, 0.7); /* Green glow */
+}
+#gameOverMenu #backMenuBtn {
+    background: linear-gradient(145deg, #2196f3, #1976d2); /* Action Blue */
+    border-bottom-color: #0d47a1;
+}
+#gameOverMenu #backMenuBtn:hover:not(:disabled) {
+    background-image: linear-gradient(145deg, #42a5f5, #1e88e5);
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.4), 0 0 20px rgba(33, 150, 243, 0.7); } /* Blue glow */
+
+/* --- MODIFIED Modal Styles (Full Screen) --- */
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.75); /* Dark overlay */
+  display: none; /* Controlled by JS */
+  align-items: center;
+  justify-content: center;
+  z-index: 50;
+  overflow-y: auto;
+}
+
+.modal-content {
+    position: relative;
+    background-color: #1c1c1c; /* Dark background */
+    background-image: var(--bg-modal-default); /* DYNAMIC BACKGROUND */
+    background-size: cover;
+    background-position: center;
+    background-blend-mode: darken;
+    width: 100%;
+    height: 100%;
+    color: #eee;
+    font-family: 'Press Start 2P', cursive;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 20px; /* Add padding for content */
+    overflow-y: auto; /* Allow scrolling */
+    /* REMOVED: border, border-radius, box-shadow, max-width, max-height */
+}
+
+/* NEW: Apply consistent background to specified modals */
+#settingsModal .modal-content,
+#withdrawModal .modal-content,
+#swapModal .modal-content {
+    background-image: var(--bg-shared-modal);
+    background-color: rgba(0,0,0,0.6); /* Ensure dark overlay for text readability */
+}
+
+.modal h2 {
+    margin-bottom: 25px;
+    font-size: 1.7em; /* FIXED: Reduced font size */
+    color: #ff38a1;
+    text-shadow: 2px 2px 2px #000, 0 0 10px #ff38a1;
+    position: absolute;
+    top: 50px; /* FIXED: Adjusted position */
+    text-align: center;
+    width: 90%;
+}
+.modal button.game-btn { width: 80%; max-width: 300px; margin: 12px 0; }
+.modal input[type="text"], .modal input[type="email"], .modal input[type="password"] {
+    width: 80%; max-width: 350px; padding: 14px; margin-top: 10px; margin-bottom: 20px;
+    border: 2px solid #555; border-radius: 8px;
+    background: #333; color: #fff; font-family: 'Arial', sans-serif; font-size: 16px; outline: none;
+    transition: border-color 0.3s, box-shadow 0.3s;
+}
+.modal input:focus { border-color: #ff38a1; box-shadow: 0 0 10px rgba(255, 56, 161, 0.7); }
+.close-btn {
+    position: absolute; top: 15px; right: 20px;
+    background: none; border: none; font-size: 40px; /* Larger close icon */
+    cursor: pointer; color: #aaa; font-family: Arial, sans-serif;
+    transition: color 0.2s, transform 0.2s; font-weight: bold; text-shadow: 1px 1px 2px rgba(0,0,0,0.7);
+    z-index: 10;
+}
+.close-btn:hover { color: #ff38a1; transform: scale(1.25) rotate(90deg); }
+
+/* --- Settings Modal Button Styles --- */
+#profileBtn { background: linear-gradient(145deg, #ab47bc, #8e24aa); border-bottom-color: #6a1b9a; } /* Purple */
+#toggleSound { background: linear-gradient(145deg, #4caf50, #388e3c); border-bottom-color: #1b5e20; } /* Green */
+#withdrawalHistoryBtn { background: linear-gradient(145deg, #ffc107, #ffa000); border-bottom-color: #ff6f00; } /* Amber */
+ #gameTransactionsBtn { background: linear-gradient(145deg, #00bcd4, #0097a7); border-bottom-color: #006064; } /* Teal */
+#customerService { background: linear-gradient(145deg, #2196f3, #1976d2); border-bottom-color: #0d47a1; } /* Blue */
+
+/* Hover states for settings buttons */
+#profileBtn:hover:not(:disabled) { background-image: linear-gradient(145deg, #ba68c8, #9c27b0); box-shadow: 0 8px 15px rgba(0, 0, 0, 0.4), 0 0 20px rgba(171, 71, 188, 0.7); }
+#toggleSound:hover:not(:disabled) { background-image: linear-gradient(145deg, #66bb6a, #43a047); box-shadow: 0 8px 15px rgba(0, 0, 0, 0.4), 0 0 20px rgba(76, 175, 80, 0.7); }
+#withdrawalHistoryBtn:hover:not(:disabled) { background-image: linear-gradient(145deg, #ffca28, #ffb300); box-shadow: 0 8px 15px rgba(0, 0, 0, 0.4), 0 0 20px rgba(255, 193, 7, 0.7); }
+#gameTransactionsBtn:hover:not(:disabled) { background-image: linear-gradient(145deg, #4dd0e1, #00bcd4); box-shadow: 0 8px 15px rgba(0, 0, 0, 0.4), 0 0 20px rgba(0, 188, 212, 0.7); } /* Teal glow */
+#customerService:hover:not(:disabled) { background-image: linear-gradient(145deg, #42a5f5, #1e88e5); box-shadow: 0 8px 15px rgba(0, 0, 0, 0.4), 0 0 20px rgba(33, 150, 243, 0.7); }
+
+
+/* --- Profile Modal Styles --- */
+#profileModal .modal-content h2 { color: #ab47bc; } /* Purple Title */
+#profileModal .modal-content p {
+    margin: 16px 0; font-family: 'Arial', sans-serif; font-size: 16px; 
+    line-height: 1.7; color: #ddd; border-bottom: 1px solid #444; padding-bottom: 10px;
+}
+#profileModal .modal-content p:last-child { border-bottom: none; }
+#profileModal .modal-content p strong { color: #fff; display: inline-block; min-width: 130px; }
+#profileModal .modal-content span { color: #ffc107; word-break: break-all; font-weight: bold; }
+#profileInfo { border-top: 1px solid #555; margin-top: 20px; padding-top: 20px; width: 90%; max-width: 450px; }
+
+ #profileModal .modal-content .profile-data-group {
+     display: flex; justify-content: space-between; align-items: center;
+     margin: 8px 0; padding-bottom: 8px; border-bottom: 1px solid #444;
+     font-size: 15px; line-height: 1.5; font-family: 'Arial', sans-serif;
+ }
+ #profileModal .modal-content .profile-data-group strong {
+     min-width: 160px; margin-right: 10px; flex-shrink: 0;
+     font-family: 'Arial', sans-serif;
+ }
+ #profileModal .modal-content .profile-data-group span {
+     flex-grow: 1; text-align: right; word-break: break-word;
+     font-weight: normal; color: #eee; font-family: 'Arial', sans-serif;
+ }
+ #profileModal .modal-content .profile-data-group .coin-value { color: #FFD700; }
+ #profileModal .modal-content .profile-data-group .pkr-value { color: #4caf50; }
+
+
+/* --- Invite Modal Styles --- */
+#inviteModal .section { margin: 25px 0; border-top: 1px solid #555; padding-top: 20px; width: 80%; max-width: 380px; text-align: center; }
+#inviteModal .section h3 { font-size: 1.2em; margin-bottom: 12px; color: #eee; text-shadow: 1px 1px 1px #000; }
+#inviteModal .section p { font-size: 1em; margin-bottom: 14px; font-family: Arial, sans-serif; color: #ccc; }
+#inviteModal #yourInviteLinkDisplay {
+    font-size: 1.1em; color: #FFD700; background: #383838; padding: 10px 14px;
+    border-radius: 6px; display: block; border: 1px solid #666;
+    word-break: break-all; text-align: center; margin-bottom: 12px;
+    font-family: monospace;
+}
+#copyInviteCode { background: linear-gradient(145deg, #ffc107, #ffa000); border-bottom-color: #ff6f00; } /* Amber */
+#redeemCodeBtn { background: linear-gradient(145deg, #4caf50, #388e3c); border-bottom-color: #1b5e20; } /* Green */
+#copyInviteCode:hover:not(:disabled) { background-image: linear-gradient(145deg, #ffca28, #ffb300); box-shadow: 0 8px 15px rgba(0, 0, 0, 0.4), 0 0 20px rgba(255, 193, 7, 0.7); }
+#redeemCodeBtn:hover:not(:disabled) { background-image: linear-gradient(145deg, #66bb6a, #43a047); box-shadow: 0 8px 15px rgba(0, 0, 0, 0.4), 0 0 20px rgba(76, 175, 80, 0.7); }
+
+/* --- Withdraw Modal Styles --- */
+#withdrawModal .modal-content .scroll-container { width: 90%; max-width: 450px; text-align: center; }
+#withdrawModal .modal-content p { margin-bottom: 25px; font-family: Arial, sans-serif; line-height: 1.6; font-size: 15px; }
+#withdrawModal .redeem-option { /* Inherits from .game-btn, override specifics */
+    background: linear-gradient(145deg, #1e88e5, #1565c0);
+    border-bottom: 4px solid #0d47a1;
+    color: #fff; padding: 12px 18px; margin: 8px 0; border-radius: 8px;
+    font-size: 14px; text-shadow: 1px 1px 2px rgba(0,0,0,0.6);
+    transition: transform 0.15s ease, box-shadow 0.2s ease, background 0.2s ease;
+    width: 100%; display: flex; align-items: center; justify-content: center;
+    cursor: pointer; box-shadow: 0 4px 7px rgba(0, 0, 0, 0.25);
+}
+#withdrawModal .redeem-option:hover:not(:disabled) {
+    background: linear-gradient(145deg, #42a5f5, #1e88e5);
+    transform: translateY(-3px) scale(1.02);
+    box-shadow: 0 7px 12px rgba(0, 0, 0, 0.3), 0 0 15px rgba(33, 150, 243, 0.6);
+}
+#withdrawModal .redeem-option:active:not(:disabled) {
+     transform: translateY(1px) scale(1); border-bottom-width: 2px;
+     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+#withdrawModal .redeem-option:disabled {
+    background: linear-gradient(145deg, #666, #444); cursor: not-allowed; border-bottom-color: #222;
+    box-shadow: none; transform: none; opacity: 0.6; color: #aaa; text-shadow: none;
+}
+#withdrawModal .redeem-option.available-option {
+    background: linear-gradient(145deg, #66bb6a, #43a047); /* Brighter Green */
+    border-bottom-color: #1b5e20;
+    box-shadow: 0 4px 7px rgba(0, 0, 0, 0.25), 0 0 12px rgba(76, 175, 80, 0.5);
+}
+#withdrawModal .redeem-option.available-option:hover:not(:disabled) {
+    background: linear-gradient(145deg, #81c784, #4caf50);
+    box-shadow: 0 7px 12px rgba(0, 0, 0, 0.3), 0 0 18px rgba(76, 175, 80, 0.7);
+    transform: translateY(-3px) scale(1.02);
+}
+ #withdrawModal .redeem-option.redeemed-once {
+     background: linear-gradient(145deg, #5a5a5a, #404040);
+     border-bottom-color: #202020;
+     cursor: not-allowed; opacity: 0.8;
+     text-decoration: line-through;
+ }
+ #withdrawModal .redeem-option.redeemed-once:hover {
+     transform: none;
+     box-shadow: 0 4px 7px rgba(0, 0, 0, 0.25);
+     background: linear-gradient(145deg, #5a5a5a, #404040);
+ }
+#swapCoinsBtnWithdraw {
+    background: linear-gradient(145deg, #f1c40f, #f39c12); border-bottom-color: #d35400;
+    margin-top: 20px;
+}
+
+#redeemForm { display: none; margin-top: 25px; font-family: Arial, sans-serif; font-size: 16px; line-height: 1.6; text-align: left; width: 100%; }
+#redeemForm h3 { font-family: 'Press Start 2P', cursive; font-size: 1.3em; color: #eee; margin-bottom: 20px; text-align: center; text-shadow: 1px 1px 1px #000; }
+#referralTaskDisplay {
+    margin-bottom: 25px; padding: 12px 18px; border-radius: 8px;
+    border: 2px solid #555; background-color: #2c2c2c;
+    font-family: 'Press Start 2P', cursive; font-size: 12px;
+    text-align: center; line-height: 1.5; letter-spacing: 0.5px;
+}
+#referralTaskDisplay.task-complete { border-color: #4caf50; color: #66bb6a; background-color: #2e4430; }
+#referralTaskDisplay.task-incomplete { border-color: #ffa000; color: #ffca28; background-color: #4d3f21; }
+#referralTaskDisplay strong { color: #fff; }
+#referralTaskDisplay .status-icon { font-weight: bold; font-size: 1.2em; margin-left: 10px; display: inline-block; vertical-align: middle; }
+#redeemForm label { display: block; margin-bottom: 6px; color: #ccc; font-size: 14px; font-family: 'Press Start 2P', cursive; }
+#redeemForm input[type="text"] { margin-bottom: 18px; border-radius: 8px; padding: 12px; width: 100%; }
+#redeemForm input[type="radio"] { margin-right: 10px; vertical-align: middle; transform: scale(1.2); }
+#redeemForm label input[type="radio"] { display: inline; margin-bottom: 0; }
+#redeemForm .payment-options label { margin-bottom: 12px; display: block; font-family: Arial, sans-serif; font-size: 15px; }
+#redeemSubmitBtn {
+     background: linear-gradient(145deg, #4caf50, #388e3c); border-bottom-color: #1b5e20; width: 100%; margin-top: 25px; font-size: 15px; padding: 14px 24px;
+ }
+#redeemSubmitBtn:hover:not(:disabled) {
+    background-image: linear-gradient(145deg, #66bb6a, #43a047);
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.4), 0 0 20px rgba(76, 175, 80, 0.7);
+}
+#redeemSubmitBtn:disabled {
+    background: linear-gradient(145deg, #666, #444); cursor: not-allowed; border-bottom-color: #222;
+    box-shadow: none; transform: none; opacity: 0.6; color: #aaa; text-shadow: none;
+}
+
+/* --- Info Modal Styles --- */
+#infoModal .modal-content h2 { color: #2196f3; } /* Blue Title */
+#infoModal .modal-content p { margin: 18px 0; font-family: 'Arial', sans-serif; font-size: 15px; line-height: 1.7; color: #ddd; text-align: left; padding-bottom: 10px; border-bottom: 1px solid #444; }
+#infoModal .modal-content p:last-child { border-bottom: none; }
+#infoModal .modal-content p strong { color: #fff; }
+#infoModal .modal-content .highlight { color: #ffee58; font-weight: bold; }
+#infoModal .info-scroll-container { width: 90%; max-width: 500px; text-align: left; }
+
+/* --- Withdrawal History Modal Styles --- */
+#withdrawalHistoryModal .modal-content h2 { color: #ffc107; }
+#historyList { margin-top: 25px; max-height: 70vh; overflow-y: auto; padding-right: 15px; text-align: left; font-family: Arial, sans-serif; font-size: 14px; line-height: 1.6; width: 90%; max-width: 500px; }
+.history-item { background: #2a2a2a; border: 1px solid #4f4f4f; border-radius: 8px; padding: 14px 18px; margin-bottom: 12px; color: #ccc; display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; box-shadow: 0 2px 4px rgba(0,0,0,0.3); }
+.history-item span { display: block; margin-bottom: 5px; font-size: 13px; }
+.history-item .details { flex-grow: 1; margin-right: 15px; }
+.history-item .details span:first-child { font-weight: bold; color: #eee; font-size: 14px; }
+.history-item .status { font-family: 'Press Start 2P', cursive; font-size: 11px; padding: 5px 10px; border-radius: 5px; text-transform: uppercase; min-width: 90px; text-align: center; margin-top: 5px; font-weight: bold; letter-spacing: 0.5px; }
+.history-item .status-pending { background-color: #ffa000; color: #4d3f21; border: 1px solid #e67e22;}
+.history-item .status-approved { background-color: #4caf50; color: #1b5e20; border: 1px solid #10ac84;}
+.history-item .status-rejected { background-color: #f44336; color: #5e141e; border: 1px solid #c0392b;}
+.history-item .date { font-size: 11px; color: #999; width: 100%; text-align: right; margin-top: 6px; }
+#historyList .no-history { color: #888; text-align: center; padding: 25px; font-size: 1.1em; font-style: italic;}
+
+ /* --- Complete Profile Modal Styles --- */
+#completeProfileModal .modal-content h2 { color: #4caf50; }
+#completeProfileModal .modal-content p { margin-bottom: 18px; font-family: Arial, sans-serif; line-height: 1.6; font-size: 15px; text-align: center; color: #ddd; width: 80%; max-width: 370px; }
+#completeProfileModal .modal-content p.subtle { font-size: 12px; color: #aaa; font-style: italic; margin-top: -12px; }
+#completeProfileModal .modal-content label { font-family: 'Press Start 2P', cursive; font-size: 13px; }
+#completeProfileModal .modal-content input[type="text"] { margin-bottom: 25px; border-radius: 8px; padding: 12px; }
+#completeProfileModal #saveProfileBtn { background: linear-gradient(145deg, #4caf50, #388e3c); border-bottom-color: #1b5e20; }
+#completeProfileModal #saveProfileBtn:hover:not(:disabled) { background-image: linear-gradient(145deg, #66bb6a, #43a047); box-shadow: 0 8px 15px rgba(0, 0, 0, 0.4), 0 0 20px rgba(76, 175, 80, 0.7); }
+
+/* --- Ad Container Styles --- */
+#bannerAdContainer { position: fixed; bottom: 0; left: 0; width: 100%; height: 50px; background-color: #080808; z-index: 1000; display: flex; justify-content: center; align-items: center; overflow: hidden; border-top: 3px solid #333; }
+#bannerAdContainer iframe { max-width: 100%; }
+#interstitialAdOverlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.92); z-index: 2000; display: none; flex-direction: column; justify-content: center; align-items: center; color: white; text-align: center; font-family: 'Press Start 2P', cursive; padding: 20px; backdrop-filter: blur(4px); }
+#interstitialAdOverlay p#adInfoText { font-size: 1.2em; margin-bottom: 30px; color: #eee; line-height: 1.6; text-shadow: 1px 1px 2px #000; }
+#interstitialAdCloseButton {
+    padding: 14px 28px; font-size: 1em; cursor: pointer;
+    background: linear-gradient(145deg, #f44336, #d32f2f); border-bottom-color: #b71c1c;
+    color: white; border-radius: 10px; font-family: 'Press Start 2P', cursive;
+    display: none; text-transform: uppercase; margin-top: 25px;
+    text-shadow: 2px 2px 3px rgba(0,0,0,0.8); border: none;
+    box-shadow: 0 5px 8px rgba(0, 0, 0, 0.3);
+}
+#interstitialAdCloseButton:hover {
+    transform: translateY(-3px) scale(1.04);
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.4), 0 0 18px rgba(244, 67, 54, 0.7);
+    background: linear-gradient(145deg, #ef5350, #e53935);
+}
+#interstitialAdTimer { margin-top: 18px; font-size: 0.9em; color: #bbb; }
+#interstitialAdOverlay p.skip-info { font-size: 0.8em; color: #aaa; margin-top: 35px; font-family: Arial, sans-serif; line-height: 1.5; }
+
+/* --- Status Message Container --- */
+#statusMessageContainer {
+    display: none; position: fixed; top: 15px; left: 50%; transform: translateX(-50%);
+    background-color: rgba(10, 10, 10, 0.92); color: white; padding: 14px 28px;
+    border-radius: 10px; z-index: 5000; font-family: 'Press Start 2P', cursive; font-size: 1.0em;
+    text-align: center; border: 3px solid #fff; box-shadow: 0 5px 15px rgba(0, 0, 0, 0.6);
+    opacity: 0;
+    transition: opacity 0.4s ease-in-out, top 0.4s ease-in-out, transform 0.4s ease-in-out;
+    max-width: 90%; pointer-events: none; letter-spacing: 0.5px;
+}
+#statusMessageContainer.show {
+    display: block; opacity: 1; top: 30px;
+    transform: translateX(-50%) scale(1);
+}
+#statusMessageContainer.success { border-color: #4caf50; box-shadow: 0 5px 15px rgba(0, 0, 0, 0.6), 0 0 15px rgba(76, 175, 80, 0.6); }
+#statusMessageContainer.error { border-color: #f44336; box-shadow: 0 5px 15px rgba(0, 0, 0, 0.6), 0 0 15px rgba(244, 67, 54, 0.6); }
+#statusMessageContainer.info { border-color: #2196f3; box-shadow: 0 5px 15px rgba(0, 0, 0, 0.6), 0 0 15px rgba(33, 150, 243, 0.6); }
+
+/* --- Spin Wheel Specific Styles (some custom, some Tailwind) --- */
+.wheel-container {
+    position: relative;
+    width: 100%;
+    max-width: 350px;
+    margin: 0 auto 20px auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.wheel-svg {
+    display: block;
+    transition: transform 5s cubic-bezier(0.25, 0.1, 0.25, 1);
+}
+.wheel-arrow {
+    position: absolute;
+    top: -25px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 30px;
+    height: 30px;
+    color: #ff38a1;
+    filter: drop-shadow(0 0 5px rgba(255, 56, 161, 0.8));
+    z-index: 10;
+}
+.wheel-center-pin {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 60px;
+    height: 60px;
+    background-color: #4caf50;
+    border-radius: 50%;
+    border: 4px solid #eee;
+    z-index: 5;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-family: 'Press Start 2P', cursive;
+    color: white;
+    font-size: 14px;
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.8);
+    text-transform: uppercase;
+    box-shadow: 0 0 15px rgba(76, 175, 80, 0.7), inset 0 0 8px rgba(0,0,0,0.5);
+}
+.wheel-text {
+    font-family: Arial, sans-serif; font-size: 10px;
+    fill: #000; font-weight: bold;
+    text-anchor: middle; dominant-baseline: central;
+}
+.wheel-text-outline {
+    stroke: #fff; stroke-width: 1;
+    paint-order: stroke fill;
+}
+
+ .timer-display {
+     font-family: Arial, sans-serif;
+     font-size: 14px;
+     color: #bbb;
+     margin-top: 15px;
+     min-height: 1.2em;
+ }
+  .buy-spin-option {
+      font-size: 13px;
+      padding: 12px 20px;
+      margin-top: 15px;
+      background: linear-gradient(145deg, #ffc107, #ffa000);
+      border-bottom-color: #ff6f00;
+  }
+  .buy-spin-option:hover:not(:disabled) {
+      background-image: linear-gradient(145deg, #ffca28, #ffb300);
+      box-shadow: 0 8px 15px rgba(0, 0, 0, 0.4), 0 0 20px rgba(255, 193, 7, 0.7);
+  }
+  .buy-spin-option:disabled {
+       background: linear-gradient(145deg, #666, #444); cursor: not-allowed; border-bottom-color: #222;
+        box-shadow: none; transform: none; opacity: 0.6; color: #aaa; text-shadow: none;
+  }
+
+ /* --- Swap Modal Styles --- */
+#swapModal .modal-content h2 { 
+    color: #2196f3;
+    font-size: 1.6em; /* FIXED: Reduced font size */
+}
+#swapModal .modal-content p { margin: 15px 0; font-family: Arial, sans-serif; font-size: 15px; line-height: 1.6; color: #ddd; }
+#swapModal .modal-content p strong { color: #fff; display: inline-block; min-width: 100px; }
+ #swapModal .swap-info {
+     background: #383838; padding: 10px 14px; margin-bottom: 20px;
+     border-radius: 6px; border: 1px solid #666;
+     font-family: 'Press Start 2P', cursive; font-size: 12px; line-height: 1.5;
+     text-align: center;
+ }
+ #swapModal .swap-info .status-group {
+     display: flex;
+     align-items: center;
+     justify-content: center;
+     margin: 2px 0;
+      padding: 0;
+ }
+ #swapModal .swap-info .status-group img {
+     width: 14px; height: 14px; margin-right: 5px;
+     display: none;
+ }
+  #swapModal .swap-info .status-group span {
+      font-weight: bold;
+      font-size: 1em;
+  }
+ #swapModal .swap-info strong { color: #ffc107; }
+ #swapModal .swap-info .pkr-highlight { color: #4caf50; }
+ #swapToPkrBtn {
+     background: linear-gradient(145deg, #2196f3, #1976d2); border-bottom-color: #0d47a1;
+     width: 100%; margin-top: 20px; font-size: 15px;
+ }
+ #swapToPkrBtn:hover:not(:disabled) {
+    background-image: linear-gradient(145deg, #42a5f5, #1e88e5);
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.4), 0 0 20px rgba(33, 150, 243, 0.7);
+ }
+ #swapToPkrBtn:disabled {
+    background: linear-gradient(145deg, #666, #444); cursor: not-allowed; border-bottom-color: #222;
+    box-shadow: none; transform: none; opacity: 0.6; color: #aaa; text-shadow: none;
+ }
+
+ /* --- Game Transactions Modal Styles --- */
+#gameTransactionsModal .modal-content h2 { 
+    color: #00bcd4;
+    font-size: 1.6em; /* FIXED: Reduced font size */
+}
+#transactionsList { margin-top: 25px; max-height: 70vh; overflow-y: auto; padding-right: 15px; text-align: left; font-family: Arial, sans-serif; font-size: 14px; line-height: 1.6; width: 90%; max-width: 500px; }
+.transaction-item { background: #2a2a2a; border: 1px solid #4f4f4f; border-radius: 8px; padding: 14px 18px; margin-bottom: 12px; color: #ccc; display: flex; flex-direction: column; box-shadow: 0 2px 4px rgba(0,0,0,0.3); }
+.transaction-item .details { flex-grow: 1; margin-bottom: 8px; }
+.transaction-item .details strong { color: #eee; font-size: 15px; margin-right: 8px;}
+.transaction-item .details span { font-size: 14px; color: #ddd; }
+.transaction-item .meta { display: flex; justify-content: space-between; align-items: center; font-size: 11px; color: #999; }
+.transaction-item .type { font-family: 'Press Start 2P', cursive; font-size: 10px; padding: 3px 8px; border-radius: 4px; text-transform: uppercase; min-width: 70px; text-align: center; font-weight: bold; letter-spacing: 0.5px; }
+.transaction-item .type-game_score { background-color: #ffc107; color: #4d3f21; border: 1px solid #e67e22;}
+.transaction-item .type-spin_coins { background-color: #9c27b0; color: #4a148c; border: 1px solid #7b1fa2;}
+.transaction-item .type-spin_pkr { background-color: #00bcd4; color: #006064; border: 1px solid #00838f;}
+.transaction-item .type-swap_coins { background-color: #2196f3; color: #0d47a1; border: 1px solid #1565c0;}
+#transactionsList .no-transactions { color: #888; text-align: center; padding: 25px; font-size: 1.1em; font-style: italic;}
+
+
+/* --- NEW/UPDATED Character Selection Modal Styles --- */
+#characterSelectionModal .modal-content {
+    background-image: var(--bg-char-select); /* --- Use main menu background --- */
+    background-size: cover;
+    background-position: center;
+    background-blend-mode: darken;
+    background-color: rgba(0,0,0,0.6); /* --- Add overlay for readability --- */
+    padding-top: 100px; 
+}
+#characterSelectionModal h2 {
+    color: #f1c40f; /* Yellowish color */
+    text-shadow: 0 0 5px #f1c40f, 0 0 10px #f1c40f, 2px 2px 2px #000;
+    font-size: 2em;
+}
+#characterContainer {
+    display: flex;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    width: 100%;
+    max-width: 100%;
+    padding: 80px 5vw 40px 5vw; /* --- Increased top padding for image overflow --- */
+    gap: 30px;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+}
+#characterContainer::-webkit-scrollbar { display: none; }
+#characterContainer { -ms-overflow-style: none; scrollbar-width: none; }
+
+.character-card {
+    flex: 0 0 200px; /* Fixed width */
+    width: 200px;
+    height: 250px; /* --- Adjusted height for price --- */
+    background-color: #e74c3c; /* Red color from image */
+    border-radius: 20px;
+    padding: 15px;
+    padding-top: 75px; /* --- Space for the image --- */
+    position: relative;
+    text-align: center;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.4);
+    scroll-snap-align: center;
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end; /* Align content to bottom */
+}
+ .character-card.selected {
+    transform: scale(1.08);
+    box-shadow: 0 0 20px 5px #f1c40f, inset 0 0 15px rgba(255,255,255,0.3);
+}
+.character-card:not(.selected):hover {
+    transform: translateY(-10px);
+}
+.char-image-container {
+    position: absolute;
+    top: -75px; /* --- Adjust to make image sit higher on top, preventing cutoff --- */
+    left: 50%;
+    transform: translateX(-50%);
+    height: 160px; /* --- Larger image container --- */
+    width: 160px;
+    pointer-events: none;
+}
+.char-image-container img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    filter: drop-shadow(0 5px 10px rgba(0,0,0,0.5));
+}
+.character-card-content {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    justify-content: space-between; /* Space out content */
+}
+.char-info {
+    margin-top: 10px; /* Space from top padding */
+}
+.char-name {
+    font-size: 1.8em;
+    color: #fff;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.6);
+    line-height: 1;
+}
+.char-skill-badge {
+    font-family: 'Arial', sans-serif;
+    font-size: 0.9em;
+    color: #eee;
+    margin-top: 8px;
+}
+/* --- NEW: Price display inside the card --- */
+.char-price-display {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    font-family: 'Press Start 2P', cursive;
+    font-size: 13px;
+    color: #fff;
+    white-space: nowrap;
+    margin-top: 12px;
+    text-shadow: 1px 1px 2px #000;
+}
+.char-price-display img {
+    width: 16px;
+    height: 16px;
+}
+.char-footer {
+    margin-top: auto; /* Push to the bottom */
+    padding-top: 15px; /* Space between text and button */
+}
+.char-action-btn {
+    width: 90%;
+    padding: 12px 10px; /* Adjusted padding */
+    font-size: 13px; /* Adjusted font size */
+    margin: 0 auto;
+    display: block;
+    border-radius: 10px;
+    border-bottom-width: 5px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+}
+.char-action-btn.buy-btn {
+    background: linear-gradient(145deg, #f39c12, #e67e22);
+    border-bottom-color: #d35400;
+}
+.char-action-btn.select-btn {
+    background: linear-gradient(145deg, #2ecc71, #27ae60);
+    border-bottom-color: #16a085;
+}
+/* --- End of Character Styles --- */
+
+/* NEW STYLE FOR ENEMY GIFS */
+.enemy-gif-sprite {
+    position: absolute;
+    display: none;
+    pointer-events: none;
+    image-rendering: pixelated;
+    image-rendering: -moz-crisp-edges;
+    image-rendering: crisp-edges;
+}

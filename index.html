@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <!-- UPDATED Viewport for PWA Fullscreen Fix -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+
+  <title>Super Mario Run - Play Online & Earn Money</title>
+  <meta name="description" content="Play Super Mario Run online and earn real money. Classic Mario gameplay on browser. No download needed!" />
+  <meta name="keywords" content="Super Mario Run, Mario game, Earn money playing, Play Super Mario online, Free Mario Run game, Super Mario browser game" />
+  <meta name="author" content="Zalix Games" />
+  <meta property="og:title" content="Play Super Mario Run – Earn While You Play!" />
+  <meta property="og:description" content="Enjoy classic Mario Run online and earn rewards while having fun!" />
+  <meta property="og:image" content="https://supermariorun.site/assets/preview.png" />
+  <meta property="og:url" content="https://supermariorun.site" />
+  <meta property="og:type" content="website" />
+  <meta name="robots" content="index, follow" />
+
+  <!-- PWA Meta Tags -->
+  <meta name="theme-color" content="#3761bd" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="Mario Run" />
+  <link rel="manifest" href="./manifest.json" />
+  <link rel="apple-touch-icon" href="./20250517_001646.png" />
+
+  <!-- External Stylesheet -->
+  <link rel="stylesheet" href="style.css">
+
+  <!-- Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet" />
+
+  <!-- SEO: Structured Data for Video Game -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "VideoGame",
+    "name": "Super Mario Run - Play Online & Earn Money",
+    "url": "https://supermariorun.site",
+    "description": "Play Super Mario Run online and earn real money. Classic Mario gameplay on browser. No download needed!",
+    "applicationCategory": "Game",
+    "operatingSystem": "Web browser",
+    "browserRequirements": "Requires HTML5 Canvas and JavaScript",
+    "offers": {
+      "@type": "Offer",
+      "price": "0",
+      "priceCurrency": "USD"
+    },
+    "genre": ["Arcade game", "Platform game", "Endless runner"],
+    "playMode": "SinglePlayer",
+    "publisher": {
+      "@type": "Organization",
+      "name": "Zalix Games"
+    },
+    "image": "https://supermariorun.site/assets/preview.png",
+    "keywords": "Super Mario Run, Mario game, Earn money playing, Play Super Mario online, Free Mario Run game, Super Mario browser game"
+  }
+  </script>
+
+  <!-- Service Worker Registration -->
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('./service-worker.js')
+          .then(registration => {
+            console.log('ServiceWorker registration successful with scope: ', registration.scope);
+          })
+          .catch(err => {
+            console.log('ServiceWorker registration failed: ', err);
+          });
+      });
+    }
+  </script>
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body>
+  
+  <!-- NEW Loading Screen -->
+  <div id="loadingScreen">
+    <div id="loadingText">Loading Game...</div>
+    <div class="progress-bar-container">
+        <div id="progressBar"></div>
+    </div>
+    <div id="loadingPercentage">0%</div>
+    <!-- New: Fallback button in case loading gets stuck -->
+    <button id="forceStartBtn" class="game-btn" style="display: none; margin-top: 20px; font-size: 10px;">Click here if stuck</button>
+  </div>
+
+
+  <!-- Status Message Container -->
+  <div id="statusMessageContainer"> <span id="statusMessageText"></span> </div>
+
+  <!-- Audio Elements -->
+  <audio id="backgroundAudio" loop> <source src="mines background .mp3" type="audio/mp3"> Your browser does not support the audio element. </audio>
+  <audio id="jumpSound"> <source src="gruntjumpland-101soundboards.mp3" type="audio/mp3"> </audio>
+  <audio id="coinSound"> <source src="coin-recieved-230517.mp3" type="audio/mp3"> </audio>
+  <audio id="gameOverSound"> <source src="game-over-arcade-6435.mp3" type="audio/mp3"> </audio>
+  <!-- New Audio for Spin -->
+  <audio id="spinStartSound"><source src="https://file-examples-com.github.io/uploads/2017/11/file_example_WAV_1MG.wav" type="audio/wav"></audio>
+  <audio id="spinWinSound"><source src="https://www.soundjay.com/misc/sounds/bell-ringing-05.mp3" type="audio/mp3"></audio>
+
+
+  <!-- Google Sign-in Panel -->
+  <div id="googleSignInPanel" class="flex" style="display: none;">
+      <h2>Welcome Gamer!</h2>
+      <button id="googleSignInBtn" class="game-btn">
+          <img src="https://upload.wikimedia.org/wikipedia/commons/c/c1/Google_%22G%22_logo.svg" alt="Google G Logo"/>
+          Sign in with Google
+      </button>
+      <button id="guestButtonAlt" class="game-btn">Continue as Guest</button>
+  </div>
+
+  <!-- Complete Profile Modal -->
+  <div id="completeProfileModal" class="modal hidden">
+      <div class="modal-content">
+          <h2>Complete Your Profile</h2>
+          <p>Welcome! Please enter your Full Name to continue.</p>
+          <div>
+              <label for="profileUsernameInput">Full Name:</label>
+              <input type="text" id="profileUsernameInput" placeholder="Ex: Ali Khan" required />
+          </div>
+           <div>
+              <label for="profileReferralInput">Referral Code (Optional):</label>
+              <input type="text" id="profileReferralInput" placeholder="Enter friend's code" />
+              <p class="subtle">Enter a code to get a bonus!</p>
+          </div>
+          <button id="saveProfileBtn" class="game-btn">Save and Play</button>
+      </div>
+  </div>
+
+  <!-- Game Canvas -->
+  <canvas id="gameCanvas" class="hidden"></canvas>
+  <!-- GIF Sprite for Mario -->
+  <img id="marioGifSprite" style="position: absolute; display: none; pointer-events: none; image-rendering: pixelated; image-rendering: -moz-crisp-edges; image-rendering: crisp-edges;"/>
+  <!-- Container for Enemy GIFs -->
+  <div id="enemyGifContainer"></div>
+
+
+  <!-- Main Menu -->
+  <div id="mainMenu" class="hidden">
+     <button id="settingsBtn" title="Open Settings">
+        <svg xmlns="http://www.w.org/2000/svg" viewBox="0 0 512 512"><path d="M487.4 315.7l-42.1-24.3c2.8-12.8 4.3-26 4.3-39.4s-1.5-26.6-4.3-39.4l42.1-24.3c9.4-5.4 13.3-17.1 9.4-27.2l-45.3-78.4c-3.9-10.1-14.2-14.8-24.7-11.5l-49.5 19.9c-20.5-16.1-43-29.2-67.2-38.1l-7.5-52.8C309 3.7 300.3-2.5 290.3.1l-90.6 18.5c-10 2.1-17.6 9.9-19.8 19.8l-7.5 52.8c-24.3 8.9-46.8 22-67.2 38.1L54.6 83.1c-10.5-3.3-20.8.4-24.7 11.5L-15.4 172.9c-3.9 10.1-.1 21.8 9.4 27.2l42.1 24.3C73.5 243.3 72 256.4 72 269.9c0 13.5 1.5 26.6 4.3 39.4l-42.1 24.3c-9.4 5.4-13.3 17.1-9.4 27.2l45.3 78.4c3.9 10.1 14.2 14.8 24.7 11.5l49.5-19.9c20.5 16.1 43 29.2 67.2 38.1l7.5 52.8c2 10 10.7 15.3 20.7 12.8l90.6-18.5c10-2.1 17.6 9.9 19.8-19.8l7.5-52.8c24.3 8.9 46.8-22 67.2-38.1l49.5 19.9c10.5 3.3 20.8-.4 24.7-11.5l45.3-78.4c3.9-10.1.1 21.8-9.4-27.2zM256 336c-44.2 0-80-35.8-80-80s35.8-80 80-80c44.2 0 80 35.8 80 80s-35.8 80-80 80z"></path></svg>
+     </button>
+     
+     <!-- RE-STYLED STATUS DISPLAY -->
+     <div id="topRightStatusContainer" title="Click to Swap Coins">
+         <img src="https://i.imgur.com/PCDgdlS.png" alt="Coin">
+         <span id="menuCoinCount" class="coin-value">0</span>
+         <div class="status-divider"></div>
+         <span class="pkr-label">Rs</span>
+         <span id="menuPkrCount" class="pkr-value">0</span>
+     </div>
+     
+     <button id="startBtn" class="menu-btn game-btn">Play Now</button>
+     <button id="withdrawBtn" class="menu-btn game-btn">Withdraw</button>
+     <button id="inviteFriend" class="menu-btn game-btn">Invite (0)</button>
+     <button id="infoBtn" class="menu-btn game-btn">Game Info</button>
+     <button id="installPwaBtn" class="menu-btn game-btn">Install App</button>
+     <button id="logoutBtn" class="menu-btn game-btn">Exit</button>
+  </div>
+  
+  <!-- Character Selection Modal -->
+  <div id="characterSelectionModal" class="modal hidden">
+      <div class="modal-content">
+          <button class="close-btn" id="closeCharacterSelection">×</button>
+          <h2>Select Character</h2>
+          <div id="characterContainer">
+              <!-- Character cards will be dynamically inserted here -->
+          </div>
+      </div>
+  </div>
+
+
+  <!-- Settings Modal -->
+  <div id="settingsModal" class="modal hidden">
+    <div class="modal-content">
+      <button class="close-btn" id="closeSettings">×</button>
+      <h2>Settings</h2>
+      <button id="profileBtn" class="game-btn">View Profile</button>
+      <button id="toggleSound" class="game-btn">Sound: On</button>
+      <button id="withdrawalHistoryBtn" class="game-btn">Withdrawal History</button>
+       <button id="gameTransactionsBtn" class="game-btn">Game Transactions</button>
+      <button id="customerService" class="game-btn">Customer Service</button>
+    </div>
+  </div>
+
+  <!-- Profile Modal -->
+  <div id="profileModal" class="modal hidden">
+      <div class="modal-content">
+          <button class="close-btn" id="closeProfileModal">×</button>
+          <h2>Gamer Profile</h2>
+          <div id="profileInfo">
+              <div class="profile-data-group"><strong>Name:</strong> <span id="profileUsername">...</span></div>
+              <div class="profile-data-group"><strong>Email:</strong> <span id="profileEmail">...</span></div>
+              <div class="profile-data-group"><strong>Total Coins:</strong> <span id="profileTotalCoins" class="coin-value">...</span></div>
+               <div class="profile-data-group"><strong>Total Rs Balance:</strong> <span id="profileTotalPkr" class="pkr-value">...</span></div>
+              <div class="profile-data-group"><strong>Referrals:</strong> <span id="profileReferralCount">...</span></div>
+               <div class="profile-data-group"><strong>Total Play Time:</strong> <span id="profileTotalPlayTime">...</span></div>
+               <div class="profile-data-group"><strong>Spin Coins Won:</strong> <span id="profileTotalSpinCoins" class="coin-value">...</span></div>
+               <div class="profile-data-group"><strong>Spin Rs Won:</strong> <span id="profileTotalSpinPkr" class="pkr-value">...</span></div>
+               <div class="profile-data-group"><strong>Total Coins Swapped:</strong> <span id="profileTotalCoinsSwapped" class="coin-value">...</span></div>
+               <div class="profile-data-group"><strong>Last Active:</strong> <span id="profileLastActive">...</span></div>
+              <div class="profile-data-group"><strong>Your Code:</strong> <span id="profileInviteCode">...</span></div>
+              <div class="profile-data-group"><strong>Joined:</strong> <span id="profileJoinedDate">...</span></div>
+          </div>
+      </div>
+  </div>
+
+  <!-- Invite Modal -->
+  <div id="inviteModal" class="modal hidden">
+      <div class="modal-content">
+          <button class="close-btn" id="closeInviteModal">×</button>
+          <h2>Invite Friend</h2>
+          <div class="section">
+              <h3>Your Invite Link</h3>
+              <div id="yourInviteLinkDisplay">Generating link...</div>
+              <button id="copyInviteCode" class="game-btn">Copy Link</button>
+          </div>
+          <div class="section">
+              <h3>Redeem Invite Code</h3>
+              <input type="text" id="redeemCodeInput" placeholder="Enter friend's code" />
+              <button id="redeemCodeBtn" class="game-btn">Redeem</button>
+          </div>
+      </div>
+  </div>
+
+  <!-- Game Over Overlay -->
+  <div id="gameOverMenu" class="hidden">
+      <h2>Game Over</h2>
+      <p>Session Coins: <span id="sessionCoinCount">0</span></p>
+      <p>Total Coins: <span id="finalTotalCoins">0</span></p>
+      <p>Total Rs: <span id="finalTotalPkr">0</span></p>
+      <button id="restartBtn" class="menu-btn game-btn">Restart</button>
+      <button id="backMenuBtn" class="menu-btn game-btn">Back to Menu</button>
+  </div>
+
+  <!-- Withdraw Modal -->
+  <div id="withdrawModal" class="modal hidden">
+     <div class="modal-content">
+         <button class="close-btn" id="closeWithdraw">×</button>
+         <h2>Withdraw PKR</h2>
+         <div class="scroll-container">
+             <p style="font-size: 0.8em; color: #aaa; margin-bottom: 15px;">Note: You must Swap Coins to Rs before withdrawing.</p>
+             <p>Select an option (Requires invites):</p>
+             <div id="redeemOptions">
+                 <!-- Options will be dynamically loaded here -->
+                 <p class="no-history">Loading withdrawal options...</p>
+             </div>
+             <!-- ADDED SWAP BUTTON -->
+             <button id="swapCoinsBtnWithdraw" class="game-btn">Swap Coins</button>
+             
+             <div id="redeemForm" class="hidden">
+                 <h3>Enter Details</h3>
+                 <div id="referralTaskDisplay"></div>
+                 <form id="redeemDetailsForm">
+                     <div><label for="accountHolderName">Account Name:</label><input type="text" id="accountHolderName" required /></div>
+                     <div><label for="accountNumber">Account Number:</label><input type="text" id="accountNumber" required /></div>
+                     <div class="payment-options" style="margin-top: 15px;">
+                         <label>Method:</label>
+                         <label><input type="radio" name="paymentMethod" value="JazzCash" required> JazzCash</label>
+                         <label><input type="radio" name="paymentMethod" value="EasyPaisa" required> EasyPaisa</label>
+                     </div>
+                     <button type="submit" id="redeemSubmitBtn" class="game-btn">Submit Request</button>
+                 </form>
+             </div>
+         </div>
+     </div>
+  </div>
+
+  <!-- Game Info Modal -->
+  <div id="infoModal" class="modal hidden">
+    <div class="modal-content">
+      <button class="close-btn" id="closeInfo">×</button>
+      <h2>Game Info</h2>
+      <div class="info-scroll-container">
+          <p>Welcome to <strong>Mario Run Earn Real Money</strong>! Run, jump, collect coins, and avoid obstacles.</p>
+          <p><strong>Characters:</strong> Unlock new characters with unique skills! More expensive characters have better coin multipliers, helping you earn faster.</p>
+          <p><strong>Login:</strong> Use your Google Account to Sign in and save your progress.</p>
+          <p><strong>Guest Play:</strong> Play for fun without saving coins. Great for practice!</p>
+          <p><strong>Bonuses:</strong>
+              <br>- Get <strong class="highlight">100 Coins</strong> just for signing up!
+              <br>- Invite friends using your unique link (find it in the Invite menu).
+              <br>- When your friend signs up using your code, they get an <strong class="highlight">extra 100 Coins</strong> (total 200 start!), and YOU get <strong class="highlight">200 Coins!</strong>
+              <br>- Existing users can also redeem a code once for a <strong class="highlight">100 Coin</strong> bonus.
+          </p>
+           <p><strong>Spin Wheel:</strong> Test your luck! Get a free spin every 3 hours, or buy extra spins with coins. Earn bonus coins or PKR!</p>
+            <p><strong>Swap Coins:</strong> Tap on your balance at the top right to swap Coins for PKR (10,000 Coins = 100 Rs). Swap amount must be in blocks of 10,000 Coins.</p>
+          <p><strong>Withdrawals:</strong> Redeem your earned PKR for real rewards via JazzCash or EasyPaisa. <strong class="highlight">You must invite a certain number of friends to unlock each withdrawal tier (except the one-time 100 Rs option).</strong></p>
+           <p><strong>One-Time Withdrawal:</strong> The 100 Rs withdrawal option is available only once per user for demonstrating trustworthiness.</p>
+          <p><strong>Developer:</strong> This game was proudly developed by <strong>Wajid Ali</strong> from Peshawar, Pakistan, a passionate developer dedicated to creating fun and engaging gaming experiences.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Withdrawal History Modal -->
+  <div id="withdrawalHistoryModal" class="modal hidden">
+    <div class="modal-content">
+      <button class="close-btn" id="closeHistoryModal">×</button>
+      <h2>Withdrawal History</h2>
+      <div id="historyList"> <p class="no-history">Loading...</p> </div>
+    </div>
+  </div>
+
+  <!-- Spin Wheel Modal -->
+    <div id="spinWheelModal" class="modal hidden">
+        <div class="modal-content w-full max-w-sm bg-zinc-800 text-white rounded-xl shadow-lg p-6 border-4 border-pink-500 relative overflow-y-auto">
+            <button class="close-btn absolute top-2 right-3 text-3xl font-bold text-gray-400 hover:text-pink-500 transform hover:rotate-90 transition-transform" id="closeSpinWheel">×</button>
+            <h2 class="text-2xl font-bold text-pink-500 mb-6 text-shadow-md">Spin the Wheel!</h2>
+
+            <div class="wheel-container relative flex justify-center items-center">
+                <svg id="wheelSvg" viewBox="0 0 400 400" class="wheel-svg w-full max-w-xs sm:max-w-sm rotate-0" style="transition: transform 5s cubic-bezier(0.25, 0.1, 0.25, 1);"></svg>
+                <svg class="wheel-arrow absolute top-[-25px] left-1/2 transform -translate-x-1/2 w-8 h-8 text-pink-500 drop-shadow-lg" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm-.707-10.293a1 1 0 00-1.414 1.414L8.586 10H7a1 1 0 100 2h1.586l-1.293 1.293a1 1 0 001.414 1.414L10 13.414l1.293 1.293a1 1 0 001.414-1.414L11.414 12H13a1 1 0 100-2h-1.586l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586z" clip-rule="evenodd"></path>
+                </svg>
+                <div class="wheel-center-pin absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-16 h-16 bg-green-500 rounded-full border-4 border-white flex items-center justify-center font-press-start text-white text-sm uppercase shadow-lg z-10">Spin</div>
+            </div>
+
+            <div id="spinStatus" class="text-center text-sm mb-4 font-press-start text-yellow-400 min-h-[1.2em]">Ready to spin!</div>
+            <div id="spinsLeftDisplay" class="text-center text-sm mb-4 font-press-start text-gray-300 min-h-[1.2em]">Spins left: 0</div>
+            <div id="cooldownTimerDisplay" class="text-center timer-display text-gray-400 min-h-[1.2em]"></div>
+
+            <button id="freeSpinBtn" class="game-btn bg-blue-600 hover:bg-blue-700 border-b-4 border-blue-800 w-full mt-4">
+                Free Spin
+            </button>
+            <button id="buySpinBtn" class="buy-spin-option game-btn w-full mt-3 disabled:opacity-50 disabled:cursor-not-allowed">
+                Buy Spin (1000 Coins)
+            </button>
+        </div>
+    </div>
+
+    <!-- Swap Modal -->
+    <div id="swapModal" class="modal hidden">
+        <div class="modal-content">
+            <button class="close-btn" id="closeSwapModal">×</button>
+            <h2>Swap Coins to Rs</h2>
+             <p>Convert your game Coins into real PKR balance.</p>
+            <div class="swap-info">
+                <div class="status-group"><img src="https://i.imgur.com/PCDgdlS.png" alt="Coin" style="display: none;">Coins: <strong id="swapCurrentCoins">0</strong></div>
+                 <div class="status-group">Rs <span class="pkr-highlight" id="swapCurrentPkr">0</span></div>
+            </div>
+             <p>Swap Rate: <strong>10,000 Coins</strong> = <span class="pkr-highlight">100 Rs</span></p>
+             <p class="subtle">(Swap amount must be in blocks of 10,000 Coins)</p>
+            <button id="swapToPkrBtn" class="game-btn">Swap 10,000 Coins</button>
+        </div>
+    </div>
+
+     <!-- Game Transactions Modal (NEW) -->
+    <div id="gameTransactionsModal" class="modal hidden">
+      <div class="modal-content">
+        <button class="close-btn" id="closeTransactionsModal">×</button>
+        <h2>Game Transactions</h2>
+        <div id="transactionsList"> <p class="no-transactions">Loading...</p> </div>
+      </div>
+    </div>
+
+
+  <!-- AD INTEGRATION -->
+  <div id="bannerAdContainer">
+    <script type="text/javascript">
+        atOptions = {
+            'key' : '34daa95d37aa866e4d5dc188a89f19b2',
+            'format' : 'iframe',
+            'height' : 50,
+            'width' : 320,
+            'params' : {}
+        };
+    </script>
+    <script type="text/javascript" src="//www.highperformanceformat.com/34daa95d37aa866e4d5dc188a89f19b2/invoke.js"></script>
+  </div>
+  <div id="interstitialAdOverlay" class="hidden">
+      <p id="adInfoText">Loading ad...</p>
+      <div id="interstitialAdTimer"></div>
+      <button id="interstitialAdCloseButton" class="game-btn hidden">Skip Ad</button>
+      <p class="skip-info">(Click 'Skip Ad' or close ad tab manually if needed)</p>
+  </div>
+
+    <!-- WhatsApp Button -->
+    <a href="https://whatsapp.com/channel/0029VbAKXCi2ER6lhPezY50a" target="_blank" id="whatsappBtn" class="whatsapp-btn" title="Join our WhatsApp Channel">
+        <img src="https://i.imgur.com/d2UlLQN.png" alt="WhatsApp Icon">
+    </a>
+
+    <!-- Spin Button -->
+    <div id="spinBtn" class="hidden bg-yellow-500 hover:bg-yellow-600 shadow-lg hover:shadow-xl">
+        <img src="./Picsart_25-06-03_14-44-00-310.png" alt="Spin Wheel Icon">
+    </div>
+
+
+  <!-- External JavaScript File -->
+  <script type="module" src="script.js"></script>
+
+  <!-- Social Bar Script -->
+  <script type='text/javascript' src='//pl26479822.profitableratecpm.com/11/f3/83/11f3830187c378aedebef88b0bcd83a0.js'></script>
+
+</body>
+</html>
